@@ -4,15 +4,100 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Shivansh Shekhar's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
-    </div>
+    <h1>Shivansh Shekhar's Assignment 1!</h1>
+    <br>
+    <h2>Circuit Schematic</h2>
+    <br>
+    <img src="calculations.jpeg" class="resize-image" />
+    <br>
+    <p>
+      This image shows the calculation of current through the circuit with the red LED.
+      Additionally, the ideal resistance for the circuit is calculated.
+      A schematic for the circuit for the red LED is also shown.
+    </p>
+    <br>
+    <img src="schema2.jpeg" class="resize-image" />
+    <br>
+    <p>
+      This image shows the calculation of current through the circuit with the blue LED.
+      Additionally, the ideal resistance for the circuit is calculated.
+      Schematic for the blue and green LEDs circuits are also shown.
+    </p>
+    <br>
+    <br>
+    <h2>The Circuit</h2>
+    <br>
+    <img src="circuit.jpeg" alt="A picture of the circuit">
+    <br>
+    <p>
+      The picture shows the circuit for the assignment.
+      It has voltage outputs in the 10, 11, 12 slots. 220 ohm resistors are connected with the red and the green LEDs.
+      A 100 ohm resistor is connected to the blue LED. The circuit is powered by the Arduino.
+    </p>
+    <br>
+    <br>
+    <h2>Firmware</h2>
+    <br>
+    <pre><code>
+      // the setup function runs once when you press reset or power the board
+      void setup() {
+        // initialize digital pin 10, 11, 12 as the outputs.
+        pinMode(12, OUTPUT); // the voltage output for the red led
+        pinMode(11, OUTPUT); // the voltage output for the blue led
+        pinMode(10, OUTPUT); // the voltage output for green led
+      }
+
+      // the loop function runs over and over again forever
+      void loop() {
+        // the for loop changes the port and hence the led getting the voltage changes. (green - 10, blue - 11, red - 12)
+        for (int i = 10; i < 13; i++) {
+          digitalWrite(i, HIGH);  // turn the current (green - 10, blue - 11, red - 12) LED on (HIGH is the voltage level)
+          delay(300);                      // wait for 0.3 seconds
+          digitalWrite(i, LOW);   // turn the current (green - 10, blue - 11, red - 12) LED off (LOW is the voltage level)
+          delay(300);                      // wait for 0.3 seconds
+        }
+      }
+    </code></pre>
+    <br>
+    <br>
+    <h2>Circuit's Operation</h2>
+    <br>
+    <img src="Blink.GIF" alt="GIF representing the circuit's operation" />
+    <br>
+    <p>
+      The circuit blinks the green LED followed by the blue and then the red. Then it keeps going until the power source is on.
+      The time between each blink is 0.3 seconds.
+    </p>
+    <br>
+    <br>
+    <h2>Questions</h2>
+    <br>
+    <p><strong>1: Draw a graph where the X axis is time and the Y axis is voltage across the LEDs. Draw a line for each of your 3 LEDs.</strong></p>
+    <br>
+    <img src="time-voltage.jpeg" alt="Graph representing voltage across the LEDs over time in the circuit" class="resize-image">
+    <br>
+    <p>
+      The graph above represents the voltage across the LEDs in the circuit and the color indicates the color of the LED across which the voltage is present.
+      While blinking the voltage takes a value and becomes zero in equal intervals.
+      The blue light has a higher voltage across it than red and green.
+    </p>
+    <br>
+    <p><strong>2: How many LEDs could you blink independently with your Arduino? How much current would that draw?</strong></p>
+    <br>
+    <p>We can blink 14 individual LEDs with the arduino. This is because there are 14 outputs in the arduino that can have variating voltage. (0-13) Each LED will draw its own current in turns (since it is independent) like we did for this assignment. Therefore, depending on the resistor we use for our setup, the each time an LED is blinked, about <em>20mA</em> current would be drawn.</p>
+    <br>
+    <p><strong>4: How fast do you need to blink your LEDs until you no longer can tell that they are blinking?</strong></p>
+    <br>
+    <p>
+      From my experience, I was unable to tell if the LEDs were blinking when they were blinking at an interval of <em>3ms</em>.
+      Above that, I was able to tell that the LEDs are blinking.
+    </p>
+    <br>
+    <br>
   </body>
 </html>
