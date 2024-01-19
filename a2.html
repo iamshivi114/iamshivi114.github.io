@@ -4,15 +4,211 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Shivansh Shekhar's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 2!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 2!</p>
-    </div>
+    <h1>Shivansh Shekhar's Assignment 2!</h1>
+    <br>
+    <h2>Circuit Schematic</h2>
+    <br>
+    <img src="a2schematic1.JPG" class="resize-image" />
+    <br>
+    <p>
+      This image shows the calculation of actual current through the circuit with the blue LED.
+      Additionally, the ideal resistance for the circuits with blue, red, and yellow circuits is also calculated.
+      A schematic for the circuit for the blue LED is also shown.
+    </p>
+    <br>
+    <img src="a2schematic2.JPG" class="resize-image" />
+    <br>
+    <p>
+      This image shows the calculation of actual current through the circuit with the red and yellow LEDs.
+      Schematic for the red and yellow LED circuits are also shown.
+      Additionally, the diagram shows the schematic for the circuit with the button and mentions the reason for using a 10k resistor with it.
+    </p>
+    <br>
+    <br>
+    <h2>The Circuit</h2>
+    <br>
+    <img src="a2circuit.JPG" alt="A picture of the circuit">
+    <br>
+    <p>
+      The picture shows the circuit for the assignment.
+      It has voltage outputs in the 9, 10, 11 slots (red - 9, yellow - 10, blue - 11). Voltage input is through pin 2.
+      220 ohm resistors are connected with the red and the yellow LEDs.
+      A 100 ohm resistor is connected to the blue LED.
+      The circuit has a power source of 5V connected to one arm of the button.
+      The other arm is connected with input pin 2 and and a 10k ohm resistor.
+      The circuit is powered by the Arduino.
+    </p>
+    <br>
+    <br>
+    <h2>Firmware</h2>
+    <br>
+    <pre><code>
+      // since pin 9 on arduino is connected to the red led
+      const int red = 9;
+      // since pin 10 on arduino is connected to the yellow led
+      const int yellow = 10;
+      // since pin 11 on arduino is connected to the blue led
+      const int blue = 11;
+
+      // initializing the input and output pins on the arduino
+      void setup() {
+        // pin 9 (red) is set as output
+        pinMode(red, OUTPUT);
+        // pin 10 (yellow) is set as output
+        pinMode(yellow, OUTPUT);
+        // pin 11 (blue) is set as output
+        pinMode(blue, OUTPUT);
+        // pin 2 is set as an input pin
+        pinMode(2, INPUT);
+      }
+
+      // bunch of code that keeps getting executed until the arduino has power
+      void loop() {
+        // seeing if the input pin detects a voltage of 5V
+        if (digitalRead(2) == HIGH) {
+          // looping taking i from 1 to 255, incrementing i by 1 in each step
+          for (int i = 1; i <= 255; i++) {
+            // seeing if the input pin detects a voltage of 0V
+            if (digitalRead(2) == LOW) {
+              // setting the voltage through the yellow pin to a digital low (0V)
+              digitalWrite(yellow, LOW);
+              // breaks the for loop
+              break;
+            }
+            // sees if i is even or not (to blink i.e., to alternate the voltage of the blue pin between high and low)
+            if (i % 2 == 0) {
+              // sets the voltage of the blue pin to a digital high (5V)
+              digitalWrite(blue, HIGH);
+            } else {
+              // sets the voltage of the blue pin to a digital low (0V)
+              digitalWrite(blue, LOW);
+            }
+            // sets the voltage of the yellow pin to an analog value equal to i (range 1 to 255)
+            analogWrite(yellow, i);
+            // delay of 20 ms
+            delay(20);
+          }
+          // looping taking i from 255 to 1, decrementing i by 1 in each step
+          for (int i = 255; i > 0; i--) {
+            // seeing if the input pin detects a voltage of OV
+            if (digitalRead(2) == LOW) {
+              // sets the voltage of the yellow pin to a digital low (0V)
+              digitalWrite(yellow, LOW);
+              // breaks the loop
+              break;
+            }
+            // sees if i is even or not (to blink i.e., to alternate the voltage of the blue pin between high and low)
+            if (i % 2 == 0) {
+              // sets the voltage of the blue pin to a digital high (5V)
+              digitalWrite(blue, HIGH);
+            } else {
+              // sets the voltage of the blue pin to a digital low (0V)
+              digitalWrite(blue, LOW);
+            }
+            // sets the voltage of the yellow pin to an analog value equal to i (range 255 to 1)
+            analogWrite(yellow, i);
+            // delays for 20ms
+            delay(20);
+          }
+        } else {
+          // looping taking i from 1 to 255, incrementing i by 1 in each step
+          for (int i = 1; i <= 255; i++) {
+            // seeing if the input pin detects a voltage of 5V
+            if (digitalRead(2) == HIGH) {
+              // sets the voltage of the red pin to a digital low (0V)
+              digitalWrite(red, LOW);
+              // breaks the loop
+              break;
+            }
+            // sees if i is even or not (to blink i.e., to alternate the voltage of the blue pin between high and low)
+            if (i % 2 == 0) {
+              // sets the voltage of the blue pin to a digital high (5V)
+              digitalWrite(blue, HIGH);
+            } else {
+              // sets the voltage of the blue pin to a digital low (0V)
+              digitalWrite(blue, LOW);
+            }
+            // sets the voltage of the red pin to an analog value equal to i (range 255 to 1)
+            analogWrite(red, i);
+            // delays 20ms
+            delay(20);
+          }
+          // looping taking i from 255 to 1, decrementing i by 1 in each step
+          for (int i = 255; i > 0; i--) {
+            // seeing if the input pin detects a voltage of 5V
+            if (digitalRead(2) == HIGH) {
+              // sets the voltage of the red pin to a digital low (0V)
+              digitalWrite(red, LOW);
+              // breaks the loop
+              break;
+            }
+            // sees if i is even or not (to blink i.e., to alternate the voltage of the blue pin between high and low)
+            if (i % 2 == 0) {
+              // sets the voltage of the blue pin to a digital high (5V)
+              digitalWrite(blue, HIGH);
+            } else {
+              // sets the voltage of the blue pin to a digital low (0V)
+              digitalWrite(blue, LOW);
+            }
+            // sets the voltage of the red pin to an analog value equal to i (range 255 to 1)
+            analogWrite(red, i);
+            // delays 20ms
+            delay(20);
+          }
+        }
+      }
+    </code></pre>
+    <br>
+    <br>
+    <h2>Circuit's Operation</h2>
+    <br>
+    <img src="press.GIF" alt="GIF representing the circuit's operation when the button is pressed" />
+    <br>
+    <p>
+      Initially, the blue light is blinking and the red one is fading in and out in a cycle.
+      As soon as the button is pressed, the red light stops and the yellow light starts fading in and out in a cycle.
+      The blue light still keeps blinking. The lights fade and blink in the intervals of 20ms.
+    </p>
+    <br>
+    <img src="release.GIF" alt="GIF representing the circuit's operation when the button is released" />
+    <br>
+    <p>
+      When the button is pressed, the yellow light fades in and out and the blue light keeps blinking.
+      When it is released, the yellow light stops and the red light starts fading in and out.
+      The blue light still keeps blinking. The lights fade and blink in the intervals of 20ms.
+    </p>
+    <br>
+    <h2>Questions</h2>
+    <br>
+    <p><strong>Draw a chart where the X axis is time and the Y axis is voltage. Draw 3 lines representing the voltage across an LED with analogWrite(led, 64), analogWrite(led, 128), and analogWrite(led,255).</strong></p>
+    <br>
+    <img src="a2q1.JPG" alt="Graph representing voltage across an LED over time in the circuit for specific analogWrite values" class="resize-image">
+    <br>
+    <p>
+      The graph above represents the voltage across an LED (blue LED in this case) over time when different analog values are put through them. The pink represents analogWrite(led, 255), purple represents analogWrite(led, 128), and red represents analogWrite(led, 64).
+    </p>
+    <br>
+    <p><strong>Given your schematic, circuit, and firmware, assuming the only thing that draws current is your LEDs, how long would your circuit run if powered by a 1200 mAh battery?</strong></p>
+    <br>
+    <img src="a2q2p1.JPG" alt="Graph representing voltage across an LED over time in the circuit for specific analogWrite values" class="resize-image">
+    <br>
+    <p>
+      The image above shows the calculation for time for which the circuit will run if the button is pressed.
+      The time comes out to be 76.09 hours.
+    </p>
+    <br>
+    <img src="a2q2p2.JPG" alt="Graph representing voltage across an LED over time in the circuit for specific analogWrite values" class="resize-image">
+    <br>
+    <p>
+      The image above shows the calculation for time for which the circuit will run if the button is released.
+      The time comes out to be 76.09 hours.
+    </p>
+    <br>
+    <br>
   </body>
 </html>
