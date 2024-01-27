@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Shivansh Shekhar's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Shivansh Shekhar's Assignment 3!</h1>
+    <br>
+    <h2>Circuit Schematic</h2>
+    <br>
+    <img src="a3schematic1.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the schematic and calculations of ideal resistance through the two red and one green led. It also shows the actual current that flows through the circuit.
+    </p>
+    <br>
+    <img src="a3schematic2.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the schematic of the circuit with the photoresistor and the 10k resistor.
+      It also shows the calculation of the voltage range detected at the A0 pin, and the resistance range through the photoresistor.
+      It also states the reason for using a 10k resistor in the circuit.
+    </p>
+    <br>
+    <br>
+    <h2>The Circuit</h2>
+    <br>
+    <img src="circuit3.JPG" alt="A picture of the circuit">
+    <br>
+    <p>
+      The picture shows the circuit for the assignment.
+      It has voltage outputs in the 3, 5, 9 slots (green - 9, red - 5 (high-light), 3 (low-light)). Voltage input is through pin A0. This input detects the input between the photoresistor and the 10k resistor.
+      220 ohm resistors are connected with the green and the red LEDs.
+      The circuit has a power source of 5V connected to one arm of the photoresistor.
+      The other arm is connected with input pin A0 and and a 10k ohm resistor.
+      The circuit is powered by the Arduino.
+    </p>
+    <br>
+    <br>
+    <h2>Firmware</h2>
+    <br>
+    <pre><code>
+        // These constants won't change. They're being used to give names to the pins used.
+        // the pin that takes the input from the circuit
+        const int inputPin = A0;
+        // input for the light that is bright at a higher sensor value
+        const int highLight = 5;
+        // input for the light that is bright at a lower sensor value
+        const int lowLight = 3;
+        // input value for the light that blinks when the sensor value drops below a certain threshold.
+        const int green = 9;
+        // setup code that runs once
+        void setup() {
+          // initialize serial communications at 9600 bps
+          Serial.begin(9600);
+          // initializing pin 3 to an output pin
+          pinMode(3, OUTPUT);
+          // initializing pin 5 to an output pin
+          pinMode(5, OUTPUT);
+          // initializing pin 9 to an output pin
+          pinMode(9, OUTPUT);
+        }
+        
+        // code in the loop that runs over and over until the arduino has power
+        void loop() {
+          // reads the input value from the circuit and assigns it to the 'inputVal' variable.
+          int inputVal = analogRead(inputPin);
+          // maps the input value to the output value within the range 0, 255
+          int outputVal = map(inputVal, 0, 1023, 0, 255);
+          // writes the value corresponding to the input value to the high light's pin.
+          analogWrite(highLight, outputVal);
+          // writes the value opposite to the input value to the low light's pin.
+          analogWrite(lowLight, 255 - outputVal);
+          // prints a series of messages to the serial monitor that describe what the input and the output values are
+          Serial.print("For input value ");
+          // the input value
+          Serial.print(inputVal);
+          Serial.print(" the output value is ");
+          // the output value
+          Serial.println(outputVal);
+          // sees if the output value is less than 30. If so, blinks the green light
+          if (outputVal < 30) {
+            // sets the green light to high voltage
+            digitalWrite(green, HIGH);
+            // delays 30ms
+            delay(30);
+            // sets the green light to low voltage
+            digitalWrite(green, LOW);
+            // delays 30ms
+            delay(30);
+          }
+        }        
+    </code></pre>
+    <br>
+    <br>
+    <h2>Circuit's Operation</h2>
+    <br>
+    <video class="resize-image" autoplay muted controls>
+        <source src="a3working.mp4" type="video/mp4">
+            <source src="movie.ogg" type="video/ogg">
+          Your browser does not support the video tag.
+    </video>
+    <br>
+    <p>
+      The video shows the working of the circuit. The green light starts blinking when the output from the analog pin is less than 30. The output is determined by the input from the A0 pin. When the photoresistor gets more light, the input voltage is higher (the first red light is brighter). Otherwise, when it gets less, the input voltage is lower (the second red light is brighter).
+    </p>
+    <br>
+    <video class="resize-image" autoplay muted controls>
+        <source src="a3serial.mp4" type="video/mp4">
+            <source src="movie.ogg" type="video/ogg">
+          Your browser does not support the video tag.
+    </video>
+    <br>
+    <p>
+      The video shows the serial monitor for the circuit run shown in the video above.
+    </p>
+    <br>
+    <h2>Questions</h2>
+    <br>
+    <p><strong>1: In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</strong></p>
+    <br>
+    <img src="a3q1.JPG" alt="Solution to question one" class="resize-image">
+    <br>
+    <p>
+      The picture above shows the solution to the first question.
+      The variable resistor can only be R1 for the purpose of our circuit.
+    </p>
+    <br>
+    <p><strong>Draw a graph where the x-axis is time and the y-axis is voltage. Plot the voltage at V-measure of your voltage divider of your shared gif.</strong></p>
+    <br>
+    <img src="a3q2.JPG" alt="Graph representing voltage across an LED over time in the circuit" class="resize-image">
+    <br>
+    <p>
+      The image above shows the graph voltage time graph for the circuit represented in the video.
+    </p>
+    <br>
+    <p><strong>AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer.</strong></p>
+    <br>
+    <p>
+        In case, the analogRead returns a number that is 16-bit, the values can be between 0 and 65,535 (2^16 - 1). Consequently an analogWrite function that is 10 bit has a range of 0 to 1023. Therefore, the 16-bit value would need to be mapped to a 10-bit value by the map function.
+        The changed map function is as follows:
+        map(inputVal, 0, 65535, 0, 1023);
+    </p>
+    <br>
+    <br>
+  </body>
+</html>
