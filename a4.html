@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Shivansh Shekhar's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Shivansh Shekhar's Assignment 4!</h1>
+    <br>
+    <h2>Circuit Schematic</h2>
+    <br>
+    <img src="a4schematic.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the schematic and calculations of ideal resistance through the blue led. It also shows the actual current that flows through the circuit.
+    </p>
+    <br>
+    <img src="a4schematic2.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the schematic of the circuit with the Servo Motor and the circuit with the CapacitiveSensor. It also shows the reasoning for using the 1 megaohm resistor in the CapacitiveSensor.
+    </p>
+    <br>
+    <br>
+    <h2>The Circuit</h2>
+    <br>
+    <img src="a4circuit.jpg" alt="A picture of the circuit">
+    <br>
+    <p>
+      The picture shows the circuit for the assignment.
+      It has a power and a ground connection through the arduino.
+      The circuit has a capacitive sensor that has a 10 megaohm resistor between pin 2 and pin 4. Pin 2 is the sensor.
+      It also has a servo motor attached to pin 9 of the arduino.
+      Finally, the circuit has a blue LED light connected with a 100 ohm resistor that indicates when a touch is made. The LED is connected to digital output pin 13.
+    </p>
+    <br>
+    <br>
+    <h2>Firmware</h2>
+    <br>
+    <pre><code>
+        // Including the servo library into my code
+        #include &lt;Servo.h&gt;
+        // Including the Capacitive Sensor library into my code
+        #include &lt;CapacitiveSensor&gt;
+
+        // sets the capacitive sensor between pins 4 and 2. 2 is the sensor.
+        CapacitiveSensor capSensor = CapacitiveSensor(4,2);
+        // initializes the servo
+        Servo myServo;
+
+        // Blue LED connected to digital pin 13
+        int ledPin = 13;
+        // Servo connected to digital pin 9
+        int servoPin = 9;
+        // Threshold for touch detection (This value was taken from observation)
+        long touchThreshold = 500;
+
+        // Sets up the code
+        void setup() {
+        // Attaches the servo on pin 9 to the servo object
+        myServo.attach(servoPin);
+        // Initializes the LED pin as an output
+        pinMode(ledPin, OUTPUT);
+        // Initializes serial communication
+        Serial.begin(9600);
+        }
+
+        // executes this code again and again until the Arduino has power
+        void loop() {
+        // Reads the touch sensor value
+        long touchValue = capSensor.capacitiveSensor(30);
+        // prints the touch sensor value in the Serial Monitor
+        Serial.println(touchValue);
+        // if the sensor value is higher than the set threshold, a touch is detected.
+        if(touchValue > touchThreshold) {
+            // indicates the touch of the sensor in the Serial Monitor
+            Serial.println("Touched");
+            // Turns the LED on
+            digitalWrite(ledPin, HIGH);
+            // Moves servo to 90 degrees
+            myServo.write(90);
+            // when the touch is not detected
+        } else {
+            // prints to Serial Monitor that the touch is not detected
+            Serial.println("Not Touched");
+            // Turns the LED off
+            digitalWrite(ledPin, LOW);
+            // Returns servo to 0 degrees
+            myServo.write(0);
+        }
+        // delays for 100 ms.
+        delay(100);
+        }
+    </code></pre>
+    <br>
+    <br>
+    <h2>Circuit's Operation</h2>
+    <br>
+    <video class="resize-image" autoplay muted controls>
+        <source src="a4operation.mp4" type="video/mp4">
+            <source src="movie.ogg" type="video/ogg">
+          Your browser does not support the video tag.
+    </video>
+    <br>
+    <p>
+      The video shows the working of the circuit.
+      The blue LED turns on when the CapacitiveSensor detects a touch. Along with that, the servo turns to an angle of 90 degrees.
+      When there is no touch, the LED turns off, and the Servo returns to its original position.
+      The change in the Serial Monitor is also shown. Serial Monitor depicts whether there's a touch,
+      and what the capacitive sensor detected value is.
+    </p>
+    <br>
+    <h2>Questions</h2>
+    <br>
+    <p><strong>
+        Say you are using a servo motor you attach to pin 9. <br>
+        In your loop() you have the following code: <br>
+        for (int i=0, i<180, i++)
+        {servo.write(i); delay(100);}
+        Draw a graph with the X axis in seconds, for two seconds, and the y-axis the voltage at pin 9 with respect to ground.
+    </strong></p>
+    <br>
+    <img src="a4graph.JPG" alt="Solution graph to question one" class="resize-image">
+    <br>
+    <p>
+      The picture above shows the solution graph to the first question.
+    </p>
+    <br>
+    <p><strong>Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</strong></p>
+    <br>
+        <pre><code>
+            // use an array to store a 100 readings
+            for (int i = 0; i &lt; 100; i++) {
+            //value = sensor.read();
+            // array.append(value);
+            }
+            // array.sort()
+            // median = (array[49] + array[50]) / 2;
+            // firstDiff = array[0] - median;
+            // lastDiff = array[99] - median;
+            // Whichever has more modulus difference, gets eliminated
+            // This continues for every 100 readings
+        </code></pre>
+    <br>
+    <p><strong>Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</strong></p>
+    <br>
+    <pre><code>
+        // for every input value,
+        // value = sensor.read()
+        // average_value = ((value * 0.9) + (value * 1.1)) / 2;
+        // We take average of a 10% upper and lower value to mitigate the problem of input device measuring the values 10% up or down.
+    </code></pre>
+    <br>
+    <br>
+  </body>
+</html>
