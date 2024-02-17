@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Shivansh Shekhar's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Shivansh Shekhar's Assignment 5!</h1>
+    <br>
+    <h2>Circuit Schematic</h2>
+    <br>
+    <img src="a5schematic1.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the schematic of the circuit
+    </p>
+    <br>
+    <img src="a5schematic2.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the calculation of current through the circuit.
+    </p>
+    <br>
+    <br>
+    <img src="a5schematic3.png" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the reason for using 10M ohm resistor.
+    </p>
+    <br>
+    <h2>The Circuit</h2>
+    <br>
+    <img src="a5circuit.jpg" alt="A picture of the circuit">
+    <br>
+    <p>
+      The picture shows the circuit for the assignment.
+    </p>
+    <br>
+    <br>
+    <h2>Firmware</h2>
+    <br>
+    <pre><code>
+        // Including the Capacitive Sensor library into my code
+        #include <CapacitiveSensor.h>
+        // sets the capacitive sensor between pins 4 and 2. 2 is the sensor.
+        CapacitiveSensor capSensor = CapacitiveSensor(4,2);
+        // Setting the gate pin for the transistor
+        const int gate = 9;
+      
+        // Sets up the code
+        void setup() {
+          // Initializes the LED pin as an output pin. The pin currrently has no voltage supply and it would be written to it as we progress with the code.
+          pinMode(gate, OUTPUT);
+          // initializes tbhe capacitive sensor
+          capSensor.set_CS_AutocaL_Millis(0xFFFFFFFF);
+      
+        }
+      
+        // executes this code again and again until the Arduino has power
+        void loop() {
+          // Reads the touch sensor value
+          long touchValue = capSensor.capacitiveSensor(30);
+          // maps the touch value to an analog value for the gate pin.
+          int output = map(touchValue, 0, 1023, 0, 255);
+          // sends the output value to the transistor through the gate pin.
+          analogWrite(gate, output);
+        }
+      
+    </code></pre>
+    <br>
+    <br>
+    <h2>Circuit's Operation</h2>
+    <br>
+    <video class="resize-image" autoplay muted controls>
+        <source src="a5operation.mp4" type="video/mp4">
+            <source src="movie.ogg" type="video/ogg">
+          Your browser does not support the video tag.
+    </video>
+    <br>
+    <p>
+      The video shows the working of the circuit.
+      The value detected from the capacitive sensor determines the voltage through the gate pin of the transistor. This determines how much current would flow through the circuit.
+    </p>
+    <br>
+    <h2>Questions</h2>
+    <br>
+    <p><strong>
+        What is the absolute maximum amount of current between pins 2 and 3?
+    </strong></p>
+    <br>
+    <p>
+      According to the documentation, the absolute maximum current between pins 2 and pins 3 is <em>80A</em>.
+    </p>
+    <br>
+    <p><strong>Draw a schematic for a circuit with using at least your arduino, a DC motor, a flyback diode, and capacitors between power and ground. Find parts with datasheets you could use for each of these schematic components.</strong></p>
+    <br>
+    <img src="a5q2.JPG" alt="The schematic for the circuit.">
+    <br>
+    <p>This shows the schematic of a circuit with a dc motor, a flyback diode, and capacitors.</p>
+    <br>
+    <p>
+        The datasheets for the components are as follows,
+        DC Motor: https://media.digikey.com/pdf/Data%20Sheets/Adafruit%20PDFs/3777_Web.pdf
+        Flyback Diode: https://wiki-content.arduino.cc/documents/datasheets/Diodes.pdf
+        Capacitors: https://wiki-content.arduino.cc/documents/datasheets/cap100uF.pdf
+    </p>
+    <br>
+    <p><strong> Draw a schematic using at least your arduino, this chip, and two motors. Write (pseudo) code that shows how you would move the motors both forward, both back, then one forward one back, and one back then forward.</strong></p>
+    <br>
+    <img src="a5q3p1.JPG" alt="1 out of 2 solution for the 3rd question">
+    <p>Has the schematic the circuit and psuedo code for moving the circuit motors forward and backward directions.</p>
+    <br>
+    <img src="a5q3p2.JPG" alt="1 out of 2 solution for the 3rd question">
+    <p>Has the psuedo code for moving the circuit motors in alternate directions.</p>
+    <br>
+  </body>
+</html>
