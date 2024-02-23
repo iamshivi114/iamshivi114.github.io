@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Shivansh Shekhar's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Shivansh Shekhar's Assignment 6!</h1>
+    <br>
+    <h2>Circuit Schematic and Calculations</h2>
+    <br>
+    <img src="a6schematic1.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the schematic of the circuit and calculation of current through the LEDs.
+    </p>
+    <br>
+    <img src="a6schematic2.JPG" class="resize-image" />
+    <br>
+    <p>
+      The picture above shows the second part of calculation of current through the circuit.
+    </p>
+    <br>
+    <br>
+    <h2>The Circuit</h2>
+    <br>
+    <img src="a6circuit.jpg" alt="A picture of the circuit">
+    <br>
+    <p>
+      The picture shows the circuit for the assignment. The joystick is connected to A5 and A2 pins for x and y inputs respectively. Since the input from the joystick is analog, we need to use those pins because they can detect analog input. Pin 2, 8, 13 are able to write digital inputs to the circuit.
+      Everything has been grounded, and the joystick was connected to the 5V source.
+    </p>
+    <br>
+    <br>
+    <h2>Firmware</h2>
+    <br>
+    <h3>Arduino</h3>
+    <br>
+    <pre><code>
+        // Setting the pin for the red LED
+        const int red = 2;
+        // Setting the pin for the yellow LED
+        const int yellow = 13;
+        // Setting the pin for the green LED
+        const int green = 8; 
+
+        // Code that sets things up and runs the circuit once.
+        void setup() {
+        // Setting the red LED pin as an output pin
+        pinMode(red, OUTPUT);
+        // Setting the yellow LED pin as an output pin
+        pinMode(yellow, OUTPUT);
+        // Setting the green LED pin as an output pin
+        pinMode(green, OUTPUT);
+        // Starts the serial monitor at baud rate 9600
+        Serial.begin(9600);
+        }
+
+        // code that keeps executing until the Arduino has power
+        void loop() {
+        // Sees if there is input in the serial monitor from the website
+        if (Serial.available()){
+            // Reads the serial value
+            int readVal = Serial.read();
+            // sees if the value is zero
+            if(readVal == 0) {
+            // turning the yellow light on
+            digitalWrite(yellow, HIGH);
+            // delay for 0.1 seconds
+            delay(100);
+            // turning the yellow light off
+            digitalWrite(yellow, LOW);
+            // sees if the value is equal to 2 instead
+            } else if (readVal == 2) {
+            // turns the red LED on
+            digitalWrite(red, HIGH);
+            // delays the code for 0.1 seconds
+            delay(100);
+            // turns the red LED off
+            digitalWrite(red, LOW);
+            // sees if the value is 3 instead
+            } else if (readVal == 3) {
+            // turns the green LED on
+            digitalWrite(green, HIGH);
+            // delays for 0.1ms
+            delay(100);
+            // turns the green LED off
+            digitalWrite(green, LOW);
+            }
+        }
+
+        // Reading the input from the A5 pin and adding it to the serial (joystick's x value)
+        Serial.print(analogRead(A5));
+        // Adds a comma to serial input
+        Serial.print(",");
+        // Reading the input from the A2 pin and adding it to the serial (joystick's y value)
+        Serial.println(analogRead(A2));
+        // delays for 50 ms.
+        delay(50);
+        }
+    </code></pre>
+    <br>
+    <h3>P5</h3>
+    <br>
+    <pre><code>
+        // Baud Rate for the project's serial monitor
+        const BAUD_RATE = 9600;
+
+        // making the port used a global variable
+        let port;
+
+        // setting up the website for the project. Runs once.
+        function setup() {
+        // Run our serial setup function (below)
+        setupSerial();
+
+        // Create a canvas that is the size of our browser window.
+        // windowWidth and windowHeight are p5 variables
+        createCanvas(windowWidth, windowHeight);
+
+        // p5 text settings. BOLD and CENTER are constants provided by p5.
+        // See the "Typography" section in the p5 reference: https://p5js.org/reference/
+        textFont("system-ui", 50);
+        textStyle(BOLD);
+        textAlign(CENTER, CENTER);
+        }
+
+        // Runs this bunch of code again and again till the website is running
+        function draw() {
+        // Check whether the port is open (see checkPort function below)
+        const portIsOpen = checkPort();
+        // If the port is not open, exit the draw loop
+        if (!portIsOpen) return;
+
+        // Read from the port until the newline
+        let str = port.readUntil("\n");
+        // If we didn't read anything, return.
+        if (str.length == 0) return;
+
+        // trim the whitespace (the newline) and convert the string to a number
+        let values = str.trim().split(",");
+        // Checks if the x value from the joystick is 1023.
+        // I have chosen 1023 here because it is the maximum value for x, and can only happen when the joystick is pointing forward, i.e., the X value is at it's maximum. Analog values range from 0 to 1023.
+        if (Number(values[0]) == 1023) {
+            // turns the backround red.
+            background("red");
+            // Checks if the y value from the joystick is less than 50
+            // Even though 0 is the least value possible value, and the ideal value for when the joystick is pointed to the left, by observation, I found the value was not going to zero, therefore, I set a number that is low enough for it to not hinder the page, but enough to make the functionality work. Analog values range from 0 to 1023.
+        } else if (Number(values[1]) &lt; 50) {
+            // turns the background yellow
+            background("yellow");
+            // Checks if the x value from the joystick is less than 50
+            // Even though 0 is the least value possible value, and the ideal value for when the joystick is pointed down, by observation, I found the value was not going to zero, therefore, I set a number that is low enough for it to not hinder the page, but enough to make the functionality work. Analog values range from 0 to 1023.
+        } else if (Number(values[0]) &lt; 50) {
+            // turns the background green
+            background('green');
+            // if no input from the above, turn the background black.
+        } else {
+            background('black');
+        }
+        }
+
+        // detects a key press on the website
+        function keyPressed() {
+        // if the up arrow is pressed
+        if (keyCode == UP_ARROW) {
+            // writes the number 2 to the serial port.
+            port.write(2);
+        }
+        // if the left arrow is pressed
+        if (keyCode == LEFT_ARROW) {
+            // writes the number 0 to the serial port.
+            port.write(0);
+        }
+        // if the down arrow is pressed
+        if (keyCode == DOWN_ARROW) {
+            // writes the number 3 to the serial port.
+            port.write(3);
+        }
+        }
+
+        // Three helper functions for managing the serial connection.
+
+        function setupSerial() {
+        port = createSerial();
+
+        // Check to see if there are any ports we have used previously
+        let usedPorts = usedSerialPorts();
+        if (usedPorts.length > 0) {
+            // If there are ports we've used, open the first one
+            port.open(usedPorts[0], BAUD_RATE);
+        }
+        }
+
+        // checks if the port is open or not. Returns 'false' if no, other 'True'
+        function checkPort() {
+        if (!port.opened()) {
+            return false;
+        } else {
+            return true;
+        }
+        }
+
+        function onConnectButtonClicked() {
+        // When the connect button is clicked
+        if (!port.opened()) {
+            // If the port is not opened, we open it
+            port.open(BAUD_RATE);
+        } else {
+            // Otherwise, we close it!
+            port.close();
+        }
+        }
+    </code></pre>
+    <br>
+    <h2>Circuit's Operation</h2>
+    <br>
+    <video class="resize-image" autoplay muted controls>
+        <source src="a6operation.mp4" type="video/mp4">
+            <source src="movie.ogg" type="video/ogg">
+          Your browser does not support the video tag.
+    </video>
+    <br>
+    <p>
+      The video shows the working of the circuit.
+      First, the joystick takes the input from the user, and changes the background of the webpage accordingly to red, yellow, green, or black.
+      Second, the website takes input from the user in form of arrow keys, and lights up the LEDs in the circuit accordingly.
+    </p>
+  </body>
+</html>
