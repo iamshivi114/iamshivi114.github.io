@@ -1,1 +1,162 @@
-<img src="Final Project.png" alt="The proposal for the project">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>The Nightlight Ninja!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Nightlight Ninja</h1>
+    <h4>By Shivansh Shekhar</h4>
+    <br>
+    <h2>Concept</h2>
+    <br>
+    <img src="final_concept.JPG" class="resize-image" />
+    <p>
+      The picture above shows the basic concept of the lamp.
+    </p>
+    <br>
+    <p>The lamp is designed to be detecting light and motion and turns on according to the input it gets.</p>
+    <p>
+        The round looking sensor at the front of the box that encloses the lamp is the motion sensor.
+        This is responsible for detecting movement of any sort in its proximity.
+        Some part on the top of the box is open and lets the light inside of it. This is where the light sensor is located.
+        The light sensor detects how much light is in the area where it is kept.
+        When the light sensor detects low light (indicating a dark area) and some motion is also detected, the lamp turns on.
+        Combination of these is used, so that the lamp only illuminates when there is no light in its area and it detects a motion.
+        Turning on when there already is ample amount of light is not helpful and is wasteful in some sense.
+    </p>
+    <br>
+    <p>
+        The lamp has some features:
+        <ul>
+            <li>Stays lit for 30 seconds</li>
+            <li>Blinks for the last 5 seconds indicating it is about to close.</li>
+        </ul>
+        The time has been set to 30 seconds because that is a fair amount of time for a user to turn on a light source from their initial position.
+        The lamp blinks for the last 5 seconds in order to indicate it to the user that it is about to go off.
+    </p>
+    <br>
+    <h2>Technical Implementation</h2>
+    <br>
+    <img src="finalcircuit1.JPG" alt="First picture of the circuit">
+    <p>This shows the circuit for the lamp.</p>
+    <br>
+    <img src="finalcircuit2.JPG" alt="Second picture of the circuit" class="resize-image">
+    <p>Another picture for the circuit for the lamp.</p>
+    <br>
+    <p>
+      Here are the list of electronic components used for the lamp.
+      <ul>
+          <li>Arduino Uno - The brain of the lamp</li>
+          <li>9-V Battery - This powers the arduino</li>
+          <li>12V Power Supply - To power the lamp</li>
+          <li>LED Strip - Light for the lamp</li>
+          <li>N-MOSFET Transistor - Switches the lamp on and off automatically</li>
+          <li>Photoresistor - Detects the amount of light in the area</li>
+          <li>10K-ohm Resistor - Prevents the circuit from getting shot when the photoresistor provides minimum resistance</li>
+          <li>Motion Sensor - Detects motion in the area</li>
+          <li>Jumper Wires & Alligator Clips - To establish connections</li>
+      </ul>
+
+      Here's a list of structural items used for the lamp.
+      <ul>
+          <li>Plastic Cups - for the bulb structure and lamp shade</li>
+          <li>Plastic Straws - lamp stand</li>
+          <li>Parchment Paper - blocks the direct bright light coming from the LED strip and makes it easier for the user to look at it.</li>
+          <li>Scotch Tape - tape the elements together</li>
+          <li>Cardboard Box - boxes the circuit elements</li>
+      </ul>
+    </p>
+    <br>
+    <h3>Circuit Schematic</h3>
+    <br>
+    <img src="bulbschematic.JPG" alt="Schematic for the bulb of the lamp" class="resize-image">
+    <p>This shows the schematic for the bulb of the lamp.</p>
+    <br>
+    <p>
+        The schematic above shows the circuit for the bulb. The bulb is made out of an LED strip.
+        This LED strip has several branches connected in parallel, and each branch has three white LEDs.
+        Along with those LEDs, there's a 180 ohm resisitor in each branch.
+        That LED strip is connected to a 12V power source that powers it and to an N-Mosfet transistor that turns it on and off depending on the input from the motion and light sensors.
+        The transistor turns the circuit on when its gate (G) recieves voltage from pin 6 of the Arduino.
+    </p>
+    <br>
+    <img src="sensorcircuit.JPG" alt="Schematic for the motion and light sensors of the lamp" class="resize-image">
+    <p>This shows the schematic for the bulb of the lamp.</p>
+    <br>
+    <p>
+        In the above schematic, the sensor on the left is the motion sensor and the one on the right is the light sensor or the photoresistor.
+        Both of these are connected to a 5V power source from the Ardunio. The Arduino itself is powered with a 9V battery.
+        The way the motion sensor works is that when it detects some motion or movement, it digitally outputs a voltage of 5V to the Arduino. In this case, pin 9 of the arduino gets the input.
+        The light sensor is in fact a variable resistor whose resistance increases when the light falling on it decreases. We then take the voltage past the photoresistor and before the 10k ohm resistor as an analog input through pin A4 of the arduino. In this analog input, we get the input voltage as a 10-bit value.
+        The 10k ohm resistor is connected with the photoresistor to prevent the circuit from getting shot. This can happen when the photoresistor offers minimal resistance i.e., when it detects a lot of light.
+
+        With the help of the firmware written on the arduino, I have programmed the lamp to turn on when the input from the motion sensor is "HIGH" or 5V (pin 9) and also the input from the photoresistor is less than or equal to 100 (This value was taken from observation. Since the arduino and the photoresistor are packed in a box together, the light from the Arduino decreases the resistance of the photoresistor making it hard to go to zero).
+        This essentially indicates that there is motion at the same time as light being low in the room.
+        The firmware is given below with an explanation of each line of code.
+    </p>
+    <br>
+    <h3>Firmware</h3>
+    <br>
+    <pre><code>
+        // Analog input for the photoresistor
+        int lightSense = A4;
+        // The output for the gate of the transistor
+        int bulb = 6;
+        // input for the motion sensor
+        int motionSense = 9;
+
+        // setup for the code; executes once
+        void setup() {
+        // setting bulb pin as an output pin
+        pinMode(bulb, OUTPUT);
+        // setting the motion sensor pin as an input pin
+        pinMode(motionSense, INPUT);
+        }
+
+        // set of code that executes again and again
+        void loop() {
+        // getting the input from the light sensor
+        int lightInput = analogRead(lightSense);
+        // getting the input from the motion sensor
+        int motionInput = digitalRead(motionSense);
+        // sees if the lighting is low and there is motion detected
+        if (lightInput <= 100 && motionInput == HIGH) { // the value 100 is taken from testing and observation
+            // turn the bulb on
+            digitalWrite(bulb, HIGH);
+            // delay for 25 seconds
+            delay(25000);
+            // loop that executes 5 times; blinks the light 5 times before closing it. Gives the user an indication that the light is about to close
+            for (int i = 0; i < 5; i++) {
+            // turns the bulb off
+            digitalWrite(bulb, LOW);
+            // delay for half a second
+            delay(500);
+            // turns the bulb on
+            digitalWrite(bulb, HIGH);
+            // delay for half a second
+            delay(500);
+            }
+            // turns the bulb off
+            digitalWrite(bulb, LOW);
+        }
+        }
+    </code></pre>
+    <br>
+    <h2>Demonstration Video of the Lamp</h2>
+    <br>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/3a-DdX3vccQ?si=C9dRV-Ml9bhpmsVX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <br>
+    <p>
+      The video shows the working of the lamp.
+      As can be seen, as soon as the person has movement outside of their bed, the motion sensor detects the movement.
+      Since there is less no light in the room, the lamp turns on and stays on for 30 seconds.
+      During the last 5 seconds of the 30 seconds, the lamp blinks indicating it to the user that it is about to turn off.
+      Once the light goes off, it stays off until it detects motion again when the user returns to the space, and the same 30 second cycle repeats again
+    </p>
+  </body>
+</html>
